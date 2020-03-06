@@ -1,3 +1,6 @@
+# security
+/config/awsconfig.json
+
 # Logs
 logs
 *.log

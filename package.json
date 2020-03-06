@@ -1,0 +1,10 @@
+{
+  "name": "puppeteer-test",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "puppeteer": "^1.6.2",
+    "aws-sdk": "^2.480.0"
+  },
+  "license": "MIT"
+}
