@@ -35,7 +35,7 @@ try {
 
             // console.log(products);
             
-            await page.waitFor(1000);
+            await page.waitFor(7330);
         }
 
         // await browser.close();
