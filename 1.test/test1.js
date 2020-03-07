@@ -49,7 +49,7 @@ function sendSms(msg) {
 
     var params = {
         Message: msg,
-        PhoneNumber: '+821056242223'
+        PhoneNumber: '+821012345678'
         /*
         ,
         MessageAttributes: {
