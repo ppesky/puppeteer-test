@@ -6,9 +6,14 @@ AWS.config.update({region: 'ap-northeast-1'});
 
 //const screenshot = 'booking_results.png';
 async function scrape(proxy) {
-    const browser = await puppeteer.launch({
-        args: ['--proxy-server=' + proxy]
-    });
+    const browser;
+    if(proxy == null) {
+        browser = await puppeteer.launch();
+    } else {
+        browser = await puppeteer.launch({
+            args: ['--proxy-server=' + proxy]
+        });
+    }
     const page = await browser.newPage();
 
     await page.goto('https://www.costco.co.kr/HealthSupplement/Home-Health-CareFirst-Aid/First-Aid/c/cos_12.7.2', {waitUntil: 'load', timeout: 35000});
@@ -91,6 +96,7 @@ async function main() {
             console.log();
           }
       }
+    //   await scrape(null);
     }
   }
   
