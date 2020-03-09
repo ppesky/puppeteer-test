@@ -6,38 +6,44 @@ AWS.config.update({region: 'ap-northeast-1'});
 
 //const screenshot = 'booking_results.png';
 async function scrape(proxy) {
-    const browser;
-    if(proxy == null) {
-        browser = await puppeteer.launch();
-    } else {
-        browser = await puppeteer.launch({
-            args: ['--proxy-server=' + proxy]
-        });
-    }
-    const page = await browser.newPage();
-
-    await page.goto('https://www.costco.co.kr/HealthSupplement/Home-Health-CareFirst-Aid/First-Aid/c/cos_12.7.2', {waitUntil: 'load', timeout: 35000});
-    await page.waitForSelector('#list-view-id');
-    // div.product-name-container a.lister-name span.notranslate
+    var browser = null;
+    try {
+        if(proxy == '' || proxy == undefined) {
+            browser = await puppeteer.launch();
+        } else {
+            browser = await puppeteer.launch({
+                args: ['--proxy-server=' + proxy]
+            });
+        }
+        const page = await browser.newPage();
     
-    const products = await page.$$eval('div.product-name-container a.lister-name', anchors => {
-        return anchors.map(anchor => {
-            if(anchor.textContent.indexOf('마스크') >= 0) {
-                return 'https://www.costco.co.kr' + anchor.getAttribute('href');
+        await page.goto('https://www.costco.co.kr/HealthSupplement/Home-Health-CareFirst-Aid/First-Aid/c/cos_12.7.2', {waitUntil: 'load', timeout: 35000});
+        await page.waitForSelector('#list-view-id');
+        // div.product-name-container a.lister-name span.notranslate
+        
+        const products = await page.$$eval('div.product-name-container a.lister-name', anchors => {
+            return anchors.map(anchor => {
+                if(anchor.textContent.indexOf('마스크') >= 0) {
+                    return 'https://www.costco.co.kr' + anchor.getAttribute('href');
+                }
+            });
+        });
+        
+        products.forEach(function (pUrl) {
+            if(pUrl != null) {
+                console.log(pUrl);
+                sendSms(pUrl);
             }
         });
-    });
     
-    products.forEach(function (pUrl) {
-        if(pUrl != null) {
-            console.log(pUrl);
-            sendSms(pUrl);
-        }
-    });
-
-    console.log('[' + new Date().toLocaleString() + '] ' + proxy);
-
-    await browser.close();
+        console.log('[' + new Date().toLocaleString() + '] ' + proxy);
+    
+    } catch(error) {
+        console.error(error);
+    }
+    if(browser != null) {
+        await browser.close();
+    }
 }
 
 function sendSms(msg) {
